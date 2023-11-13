@@ -64,7 +64,7 @@ for V_EXT in "${VIDEO_EXTS[@]}" ; do
   if [ $V_CNT -gt 0 ] ; then
 		V_EXT_LIST+=" -or"
 	fi
-	V_EXT_LIST+=" -iname \*.${V_EXT}"
+	V_EXT_LIST+=" -iname *.${V_EXT}"
 	V_CNT=$((V_CNT + 1))
 done
 FIND_CMD="find ${FIND_DIR} -type f -and  ( ${V_EXT_LIST}  )"

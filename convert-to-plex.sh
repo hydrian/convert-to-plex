@@ -48,6 +48,8 @@ ALLOWED_VIDEO_CODECS=${ALLOWED_VIDEO_CODECS:-$ALLOWED_VIDEO_CODEC_DEFAULTS}
 ### Functions ###
 function clean-up {
 	test -e "${VIDEO_LIST_FILE}" && rm "${VIDEO_LIST_FILE}"
+	test -e "${TEMP_MASTER_FILE_LIST}" && rm "${TEMP_MASTER_FILE_LIST}"
+	test -e "${TEMP_MASTER_FILE_LIST_SORTED}" && rm "${TEMP_MASTER_FILE_LIST_SORTED}"
 	return 0 
 }
 
@@ -71,6 +73,7 @@ FIND_CMD="find ${FIND_DIR} -type f -and  ( ${V_EXT_LIST}  )"
 TEMP_MASTER_FILE_LIST="$(mktemp)"
 if [ $? -ne 0 ] ; then
 	echo "Failed to create TEMP_MASTER_FILE" 1>&2
+	clean-up
 	exit 2
 fi
 
@@ -79,4 +82,10 @@ if [ $? -ne 0 ] ; then
 	echo "Failed to search ${FIND_DIR}" 1>&2
 	exit 2
 fi
-
+TEMP_MASTER_FILE_LIST_SORTED="${TEMP_MASTER_FILE_LIST}.sorted"
+sort "${TEMP_MASTER_FILE_LIST}" 1> "${TEMP_MASTER_FILE_LIST_SORTED}"
+if [ $? -ne 0 ] ; then
+	echo "Failed sort master list" 1>&2
+	clean-up 
+	exit 2
+fi
